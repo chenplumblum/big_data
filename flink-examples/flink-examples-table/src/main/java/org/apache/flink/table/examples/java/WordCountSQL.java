@@ -18,6 +18,8 @@
 
 package org.apache.flink.table.examples.java;
 
+import java.sql.Timestamp;
+
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.table.api.Table;
@@ -55,7 +57,7 @@ public class WordCountSQL {
 		Table table = tEnv.sqlQuery(
 			"SELECT word, SUM(frequency) as frequency FROM WordCount GROUP BY word");
 
-		DataSet<WC> result = tEnv.toDataSet(table, WC.class);
+		DataSet<WCTest> result = tEnv.toDataSet(table, WCTest.class);
 
 		result.print();
 	}
@@ -75,6 +77,23 @@ public class WordCountSQL {
 		public WC() {}
 
 		public WC(String word, long frequency) {
+			this.word = word;
+			this.frequency = frequency;
+		}
+
+		@Override
+		public String toString() {
+			return "WC " + word + " " + frequency;
+		}
+	}
+	public static class WCTest {
+		public String word;
+		public long frequency;
+
+		// public constructor to make it a Flink POJO
+		public WCTest() {}
+
+		public WCTest(Timestamp date, long frequency) {
 			this.word = word;
 			this.frequency = frequency;
 		}
