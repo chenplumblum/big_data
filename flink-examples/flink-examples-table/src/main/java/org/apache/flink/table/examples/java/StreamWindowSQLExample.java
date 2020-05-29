@@ -90,13 +90,13 @@ public class StreamWindowSQLExample {
 		// 	"FROM orders\n" +
 		// 	"GROUP BY TUMBLE(ts, INTERVAL '5' SECOND)";
 		String query = "SELECT\n" +
-				"  HOP_START(ts, INTERVAL '1' second, INTERVAL '1' second) window_start,\n" +
-				"  HOP_END(ts, INTERVAL '1' second, INTERVAL '1' second) window_end,\n" +
+				"  HOP_START(ts, INTERVAL '1' second, INTERVAL '2' second) window_start,\n" +
+				"  HOP_END(ts, INTERVAL '1' second, INTERVAL '2' second) window_end,\n" +
 				"  COUNT(*) order_num,\n" +
 				"  SUM(amount) total_amount,\n" +
 				"  COUNT(DISTINCT product) unique_products\n" +
 				"FROM orders\n" +
-				"GROUP BY HOP(ts, INTERVAL '1' second, INTERVAL '1' second)";
+				"GROUP BY HOP(ts, INTERVAL '1' second, INTERVAL '2' second)";
 		Table result = tEnv.sqlQuery(query);
 		tEnv.toAppendStream(result, Row.class).print();
 
