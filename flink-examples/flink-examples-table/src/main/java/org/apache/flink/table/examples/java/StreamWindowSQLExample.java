@@ -56,8 +56,8 @@ public class StreamWindowSQLExample {
 		String contents = "1,beer,3,2019-12-12 00:00:01\n" +
 			"1,diaper,4,2019-12-12 00:00:02\n" +
 			"2,pen,3,2019-12-12 00:00:04\n" +
-			"2,rubber,3,2019-12-12 00:00:06\n" +
 			"3,rubber,2,2019-12-12 00:00:05\n" +
+			"2,rubber,3,2019-12-12 00:00:06\n" +
 			"4,beer,1,2019-12-12 00:00:08";
 		String path = createTempFile(contents);
 
@@ -81,6 +81,7 @@ public class StreamWindowSQLExample {
 		// run a SQL query on the table and retrieve the result as a new Table
 		String query = "SELECT\n" +
 			"  CAST(TUMBLE_START(ts, INTERVAL '5' SECOND) AS STRING) window_start,\n" +
+			"  CAST(TUMBLE_END(ts, INTERVAL '5' SECOND) AS STRING) window_end,\n" +
 			"  COUNT(*) order_num,\n" +
 			"  SUM(amount) total_amount,\n" +
 			"  COUNT(DISTINCT product) unique_products\n" +
