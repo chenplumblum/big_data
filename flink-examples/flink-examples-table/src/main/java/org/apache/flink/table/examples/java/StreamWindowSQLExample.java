@@ -50,6 +50,8 @@ public class StreamWindowSQLExample {
 			.useBlinkPlanner()
 			.inStreamingMode()
 			.build();
+		//设置并行度{用于保证计算的有序}
+		env.setParallelism(1);
 		StreamTableEnvironment tEnv = StreamTableEnvironment.create(env, settings);
 
 		// write source data into temporary file and get the absolute path
@@ -79,14 +81,22 @@ public class StreamWindowSQLExample {
 		Table sqlAll = tEnv.sqlQuery(sql_all);
 		tEnv.toAppendStream(sqlAll, Row.class).print("sql_all");
 		// run a SQL query on the table and retrieve the result as a new Table
+		// String query = "SELECT\n" +
+		// 	"  CAST(TUMBLE_START(ts, INTERVAL '5' SECOND) AS STRING) window_start,\n" +
+		// 	"  CAST(TUMBLE_END(ts, INTERVAL '5' SECOND) AS STRING) window_end,\n" +
+		// 	"  COUNT(*) order_num,\n" +
+		// 	"  SUM(amount) total_amount,\n" +
+		// 	"  COUNT(DISTINCT product) unique_products\n" +
+		// 	"FROM orders\n" +
+		// 	"GROUP BY TUMBLE(ts, INTERVAL '5' SECOND)";
 		String query = "SELECT\n" +
-			"  CAST(TUMBLE_START(ts, INTERVAL '5' SECOND) AS STRING) window_start,\n" +
-			"  CAST(TUMBLE_END(ts, INTERVAL '5' SECOND) AS STRING) window_end,\n" +
-			"  COUNT(*) order_num,\n" +
-			"  SUM(amount) total_amount,\n" +
-			"  COUNT(DISTINCT product) unique_products\n" +
-			"FROM orders\n" +
-			"GROUP BY TUMBLE(ts, INTERVAL '5' SECOND)";
+				"  HOP_START(ts, INTERVAL '1' second, INTERVAL '1' second) window_start,\n" +
+				"  HOP_END(ts, INTERVAL '1' second, INTERVAL '1' second) window_end,\n" +
+				"  COUNT(*) order_num,\n" +
+				"  SUM(amount) total_amount,\n" +
+				"  COUNT(DISTINCT product) unique_products\n" +
+				"FROM orders\n" +
+				"GROUP BY HOP(ts, INTERVAL '1' second, INTERVAL '1' second)";
 		Table result = tEnv.sqlQuery(query);
 		tEnv.toAppendStream(result, Row.class).print();
 
