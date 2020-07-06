@@ -15,36 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.spark.examples;
-
-import org.apache.spark.SparkConf;
-import scala.Tuple2;
-
-import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.sql.SparkSession;
+package com.java.base;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.SparkSession;
+import scala.Tuple2;
 
 public final class JavaWordCount {
   private static final Pattern SPACE = Pattern.compile(" ");
 
   public static void main(String[] args) throws Exception {
 
-    if (args.length < 1) {
-      System.err.println("Usage: JavaWordCount <file>");
-      System.exit(1);
-    }
 
-    SparkSession spark = SparkSession
-      .builder()
-      .master("local")
-      .appName("JavaWordCount")
-      .getOrCreate();
+    SparkConf sparkConf = new SparkConf().setAppName("Spark WordCount Application (java)").setMaster("local[*]");
+    JavaSparkContext javaSparkContext = new JavaSparkContext(sparkConf);
+    SparkSession sparkSession = new SparkSession(javaSparkContext.sc());
 
-    JavaRDD<String> lines = spark.read().textFile(args[0]).javaRDD();
+
+    JavaRDD<String> lines = sparkSession.read().textFile(args[0]).javaRDD();
 
     JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(SPACE.split(s)).iterator());
 
@@ -56,6 +52,6 @@ public final class JavaWordCount {
     for (Tuple2<?,?> tuple : output) {
       System.out.println(tuple._1() + ": " + tuple._2());
     }
-    spark.stop();
+    sparkSession.stop();
   }
 }

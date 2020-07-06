@@ -1,0 +1,12 @@
+spark Session没有读取到本地
+需要把pom版本和spark的版本一致
+
+# RDD的创建方式
+```text
+#通过已经存在的scala集合去构建
+val rdd1=sc.parallelize(List(1,2,3,4,5))val rdd2=sc.parallelize(Array("zookeeper","kafka","spark"))val rdd3=sc.makeRDD(List(1,2,3,4))复制代码
+2.3.2 加载外部的数据源去构建
+val rdd1=sc.textFile("/words.txt")复制代码
+#从已经存在的rdd进行转换生成一个新的rdd
+val rdd2=rdd1.flatMap(_.split(" "))val rdd3=rdd2.map((_,1))
+```
