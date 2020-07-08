@@ -33,7 +33,6 @@ import org.apache.flink.util.Preconditions;
  *
  * <p>Usage: <code>WordCount --input &lt;path&gt; --output &lt;path&gt;</code><br>
  * If no parameters are provided, the program is run with default data from
- * {@link WordCountData}.
  *
  * <p>This example shows how to:
  * <ul>

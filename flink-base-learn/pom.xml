@@ -33,12 +33,19 @@
             <artifactId>flink-java</artifactId>
             <version>1.10.0</version>
         </dependency>
-<!--        sql执行需要使用-->
+        <!--        sql执行需要使用-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner_2.12</artifactId>
             <version>1.10.0</version>
         </dependency>
+        <!--        当使用blink需要引入-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-planner-blink_2.12</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
 
     </dependencies>
 
