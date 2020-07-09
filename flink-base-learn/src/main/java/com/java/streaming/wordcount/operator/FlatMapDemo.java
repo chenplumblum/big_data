@@ -1,5 +1,8 @@
 package com.java.streaming.wordcount.operator;
+import java.util.List;
+
 import org.apache.flink.api.common.typeinfo.Types;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Collector;
@@ -30,6 +33,11 @@ public class FlatMapDemo {
         //详情可以参考Flink官方文档：https://ci.apache.org/projects/flink/flink-docs-release-1.6/dev/java_lambdas.html
         .returns(Types.STRING);
 
+        // DataStream<Tuple2<String,Integer>> result = textStream.flatMap((String s, Collector<Tuple2<String,Integer>> list) -> {
+        //     for (String str : s.split(" ")) {
+        //         list.collect(new Tuple2<>(str,1));
+        //     }
+        // }).returns(Types.TUPLE(Types.STRING, Types.INT));
 
 
         //4.打印输出sink
