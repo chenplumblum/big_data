@@ -43,6 +43,7 @@ public class SessionWindowing {
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		env.getConfig().setGlobalJobParameters(params);
+		//配置时间为事件时间
 		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 		env.setParallelism(1);
 
@@ -60,6 +61,7 @@ public class SessionWindowing {
 		input.add(new Tuple3<>("a", 10L, 1));
 		// We expect to detect session "b" and "c" at this point as well
 		input.add(new Tuple3<>("c", 11L, 1));
+		input.add(new Tuple3<>("c", 12L, 1));
 
 		DataStream<Tuple3<String, Long, Integer>> source = env
 				.addSource(new SourceFunction<Tuple3<String, Long, Integer>>() {
@@ -68,7 +70,9 @@ public class SessionWindowing {
 					@Override
 					public void run(SourceContext<Tuple3<String, Long, Integer>> ctx) throws Exception {
 						for (Tuple3<String, Long, Integer> value : input) {
+							//给源设置一个时间戳
 							ctx.collectWithTimestamp(value, value.f1);
+							//给源配置水位
 							ctx.emitWatermark(new Watermark(value.f1 - 1));
 						}
 						ctx.emitWatermark(new Watermark(Long.MAX_VALUE));
